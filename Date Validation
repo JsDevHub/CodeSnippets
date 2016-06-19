@@ -1,0 +1,33 @@
+package com.mkyong.common.controller;
+
+import java.util.Calendar;
+import java.util.Date;
+
+public class Test {
+
+	public static void main(String[] args) {
+	 
+		Date date = new Date("78/8/2016");
+		
+		if(validateDate(date)){
+			System.out.println(date.getDate());
+		}else{
+			System.out.println("Invalid date");
+		}
+		
+
+	}
+
+	private static  boolean validateDate(Date date) {
+
+		try {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(date);
+			return true;
+		} catch (Throwable e) {
+			return false;
+		}
+
+	}
+
+}
