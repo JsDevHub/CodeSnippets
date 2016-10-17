@@ -23,6 +23,11 @@ var SFV = {
 					SFV.showAndHideErrorMsg(input);
 					 
 			 });
+		  if (typeof(config.success) !== 'undefined'){
+			if(SFV.errorCounter == 0){
+				config.success();
+			}			
+		  }
 	  	  }	  
      return SFV.errorCounter;
      
