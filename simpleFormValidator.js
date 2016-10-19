@@ -51,11 +51,11 @@ var SimpleFormValidator = (function() {
 				}
 
 				// validation logic 2
-				if (rule.trimed)
+				if (rule.trimed && ele.type == 'text')
 					ele.val($.trim(ele.val()));
 
 				// validation logic 3
-				if (ele.val().trim().length > rule.length) {
+				if (ele.val().trim().length > rule.length && ele.type == 'text') {
 					showErrors(ele, true, 'Field Length Exceeds to '
 							+ ele.val().length + ' expected is ' + rule.length
 							+ '.');
