@@ -6,10 +6,15 @@ var SimpleFormValidator = (function() {
 
 	var validate = function(config) {
 
-		if (typeof (config) !== 'undefined') {
+		if (isNull(config)) {
 
-			$('#'+config.formId).on('submit', function(event) {
-				validateFormData(event,config);
+			$('#' + config.formId).on('submit', function(event) {
+				if (validateFormData(event, config) == 0) {
+
+					if (isNull(config.success))
+						config.success();
+
+				}
 			});
 
 		}
@@ -20,7 +25,7 @@ var SimpleFormValidator = (function() {
 
 		errorCount = 0;
 
-		if (typeof (event) !== 'undefined')
+		if (isNull(event))
 			event.preventDefault();
 
 		// get all form inputs in array
@@ -77,6 +82,18 @@ var SimpleFormValidator = (function() {
 		}
 	}
 
+	
+	
+	function isNull(property) {
+		if (typeof (property) !== 'undefined') {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
+	
 	return {
 		'validate' : validate
 	}
