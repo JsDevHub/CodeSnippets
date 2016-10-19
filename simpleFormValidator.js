@@ -1,52 +1,84 @@
-	
-	function SimpleFormValidator(config){
+var SimpleFormValidator = (function() {
 
-		
-var SFV = {
- 
-    ErrorMessages  : { required : "This field is required." },
-	errorCounter : 0,
-	validateFormData: function(event){
-       SFV.errorCounter = 0;
-    
-      // prevent form submit
-      event.preventDefault();
-	 	
-	  //get the event type
-	  if(event.type == 'focusout'){
-	            var input = $(this);
-				SFV.showAndHideErrorMsg(input);
-				 	  }else{
-	        //check all input elements for null 
-			$("form#userData :input[type='text']").each(function(){
-					   var input = $(this); 
-					SFV.showAndHideErrorMsg(input);
-					 
-			 });
-		  if (typeof(config.success) !== 'undefined'){
-			if(SFV.errorCounter == 0){
-				config.success();
-			}			
-		  }
-	  	  }	  
-     return SFV.errorCounter;
-     
-   },
-         showAndHideErrorMsg: function(input) {
-						if(input.val().trim() == ""){
-								  input.next().show().
-								  find(".error").html(SFV.ErrorMessages.required).show();
-								  //if any null fields found increase errorCounter
-								  SFV.errorCounter++;
-					   }else{
-							  input.next().hide();
-					   }
-        } 
+	var elementsArray = [];
+	var eleNameArray = [];
+	var errorCount = 0;
 
+	var validate = function(config) {
 
-}
-	 $('#'+config.formId).on('submit',SFV.validateFormData);
-   
-    $('.form-fields').on('focusout',SFV.validateFormData);
-	
+		if (typeof (config) !== 'undefined') {
+
+			$('#'+config.formId).on('submit', function(event) {
+				validateFormData(event,config);
+			});
+
+		}
+
 	}
+
+	var validateFormData = function(event, config) {
+
+		errorCount = 0;
+
+		if (typeof (event) !== 'undefined')
+			event.preventDefault();
+
+		// get all form inputs in array
+		$("form#" + config.formId + " .form-fields").each(function() {
+			elementsArray.push($(this));
+			eleNameArray.push($(this).prop('name'));
+		});
+
+		$.each(config.rules, function(i, rule) {
+
+			var index = $.inArray(rule.fieldName, eleNameArray);
+
+			if (index >= 0) {
+
+				var ele = elementsArray[index];
+
+				// validation logic 1
+				if (ele.val().trim() == "" && rule.required) {
+					showErrors(ele, true, rule.message);
+					errorCount++;
+				} else {
+					showErrors(ele, false, rule.message);
+				}
+
+				// validation logic 2
+				if (rule.trimed)
+					ele.val($.trim(ele.val()));
+
+				// validation logic 3
+				if (ele.val().trim().length > rule.length) {
+					showErrors(ele, true, 'Field Length Exceeds to '
+							+ ele.val().length + ' expected is ' + rule.length
+							+ '.');
+					errorCount++;
+				}
+			}
+		});
+
+		return errorCount;
+	}
+
+	function showErrors(ele, errorFlag, message) {
+
+		if (errorFlag) {
+			ele.css({
+				"border-color" : "red"
+			});
+			ele.next().show().find('.error').html(message).show();
+		} else {
+			ele.css({
+				"border-color" : ""
+			});
+			ele.next().hide();
+		}
+	}
+
+	return {
+		'validate' : validate
+	}
+
+}());
