@@ -9,11 +9,11 @@ var SimpleFormValidator = (function() {
 		if (!isNull(config)) {
 
 			$('#' + config.formId).on('submit', function(event) {
-			
-				if(isNull(config.rules)){
+
+				if (isNull(config.rules)) {
 					config.rules = getFormConfigDetails(config.formId);
 				}
-				
+
 				if (validateFormData(event, config) == 0) {
 
 					if (!isNull(config.success))
@@ -40,17 +40,15 @@ var SimpleFormValidator = (function() {
 			msg = $(this).attr('msg');
 			len = $(this).attr('len');
 
-				configDetails.push({
-					fieldName : $(this).attr('name'),
-					required : req,
-					message : msg,
-					length : len
-				});
+			configDetails.push({
+				fieldName : $(this).attr('name'),
+				required : req,
+				message : msg,
+				length : len
+			});
 
 		});
 
-		console.log(configDetails)
-		
 		return configDetails;
 	}
 
@@ -69,30 +67,29 @@ var SimpleFormValidator = (function() {
 			eleNameArray.push($(this).prop('name'));
 		});
 
-		console.log(config.rules);
-		
 		$.each(config.rules,
 				function(i, rule) {
 
 					var index = $.inArray(rule.fieldName, eleNameArray);
 
 					if (index >= 0) {
-
 						var ele = elementsArray[index];
 
-						// validation logic 1
-						if (ele.val().trim() == "" && rule.required) {
+						// validation logic 1 - null check
+						if ( (ele.val().trim() == "" && rule.required) || 
+								(ele.prop('type') == 'radio' && !ele.prop('checked') && rule.required) || 
+								(ele.prop('type') == 'checkbox' && !ele.prop('checked') && rule.required)) {
 							showErrors(ele, true, rule.message);
 							errorCount++;
 						} else {
 							showErrors(ele, false, rule.message);
 						}
-
-						// validation logic 2
+						
+						// validation logic 2 - trim out value if contain any spaces
 						if (rule.trimed && ele.type == 'text')
 							ele.val($.trim(ele.val()));
 
-						// validation logic 3
+						// validation logic 3 - input length check
 						if (ele.val().trim().length > rule.length
 								&& ele.type == 'text') {
 							showErrors(ele, true, 'Field Length Exceeds to '
