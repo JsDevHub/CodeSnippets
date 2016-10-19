@@ -1,3 +1,3 @@
-# CodeSnippets
+# Simple Form Validator
 
-1)Find the Duplicate Values
+simple js lib to validate form fields with less js configurations
