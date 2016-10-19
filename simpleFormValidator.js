@@ -1,5 +1,7 @@
 var SimpleFormValidator = (function() {
 
+	var errorDiv = "<div class='validation'><span class='error'></span></div>";
+	
 	var elementsArray = [];
 	var eleNameArray = [];
 	var errorCount = 0;
@@ -65,6 +67,7 @@ var SimpleFormValidator = (function() {
 		$("form#" + config.formId + " .form-fields").each(function() {
 			elementsArray.push($(this));
 			eleNameArray.push($(this).prop('name'));
+			$(this).after(errorDiv);		
 		});
 
 		$.each(config.rules,
